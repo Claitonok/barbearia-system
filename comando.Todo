@@ -1,0 +1,31 @@
+
+Information about the Todo list for the barbearia system project:
+
+
+Project:
+    ✔ Create components: Header, Footer, ServiceCard, AppointmentForm @done (20/04/2026, 11:27:32)
+    ✔ Create pages: Home, Services, Appointments @done (20/04/2026, 11:27:23)
+    ✔ npx create-next-app@latest barbearia-system @done (20/04/2026, 11:27:17)
+    ✔ Set up Tailwind CSS @done (20/04/2026, 11:27:21)
+    ✔ Implement Header and Footer components @done (20/04/2026, 11:27:35)
+    ✔ Implement Home page with welcome message and navigation links @done (20/04/2026, 11:27:40)
+    ✔ Implement Services page with list of services offered @done (20/04/2026, 11:27:45)
+    ✔ Implement Appointments page with appointment booking form @done (20/04/2026, 11:27:50)
+    ✔ Style the application using Tailwind CSS @done (20/04/2026, 11:27:55)
+    ✔ Test the application to ensure all features work correctly @done (20/04/2026, 11:28:00)
+
+Flash messages:
+    ✔ Implement flash messages for form validation and submission feedback @done (20/04/2026, 11:28:05)
+    ✔ npm install sonner @done (20/04/2026, 12:41:14)
+
+
+
+    
+    
+
+
+
+    
+    
+    
+    
