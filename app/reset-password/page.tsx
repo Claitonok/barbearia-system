@@ -1,30 +1,27 @@
 'use client';
 
-import { useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { toast } from "sonner";
+import { AuthRecover } from "@/api/auth/route";
 
 export default function ResetPasswordPage() {
 
-    const searchParams = useSearchParams() || new URLSearchParams();
     const router = useRouter();
-
-    const token = searchParams.get("token");
 
     const [senha, setSenha] = useState("");
     const [confirmarSenha, setConfirmarSenha] = useState("");
+    const [tokenState, setTokenState] = useState("");
     const [loading, setLoading] = useState(false);
-
-    // useEffect(() => {
-    //     if (!token) {
-    //         toast.error("Token inválido ou inexistente");
-    //         router.push("/login");
-    //     }
-    // }, [token]);
 
     async function handleReset(e: any) {
         e.preventDefault();
+
+        if (!tokenState) {
+            toast.error("Token inválido ou inexistente");
+            return;
+        }
 
         if (!senha || !confirmarSenha) {
             toast.error("Preencha todos os campos");
@@ -44,18 +41,9 @@ export default function ResetPasswordPage() {
         setLoading(true);
 
         try {
-            const res = await fetch("/api/auth/reset", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    token,
-                    senha
-                })
-            });
+            const res = await AuthRecover(tokenState, senha);
 
-            if (!res.ok) throw new Error();
+            if (!res.ok) throw toast.error("Token inválido ou expirado");
 
             toast.success("Senha redefinida com sucesso 🎉");
 
@@ -82,6 +70,14 @@ export default function ResetPasswordPage() {
                     </h1>
 
                     <form onSubmit={handleReset} className="flex flex-col gap-4">
+
+                        <input
+                            type="text"
+                            placeholder="Token"
+                            value={tokenState}
+                            onChange={(e) => setTokenState(e.target.value)}
+                            className="px-4 py-2 rounded-md border"
+                        />
 
                         <input
                             type="password"

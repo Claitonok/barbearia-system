@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Header } from "@/components/Header";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { RecoverEmail } from "@/api/auth/route";
+import { loginUsuario, RecoverEmail } from "@/api/auth/route";
 
 
 export default function Home() {
@@ -23,12 +23,16 @@ export default function Home() {
             // 🔥 chamada API
             const rest = await RecoverEmail(emailRecovery);
 
-            if (!rest.ok) throw toast.error("Erro ao enviar email de recuperação ❌");
+            if (!rest.ok) throw toast.error("Email não encontrado ❌");
 
-            toast.success("Enviamos um link de recuperação para seu email 📩");
+            toast.success("Enviamos um token de recuperação para seu email 📩");
+            setTimeout(() => {
+                toast.success("Redirecionando para página de reset... 🔄");
+                router.push("/reset-password");
+            }, 2000);
 
         } catch (error) {
-            toast.error("Erro ao enviar email de recuperação ❌");
+            toast.error("Erro no servidor ao enviar email de recuperação ❌");
         }
     }
 
@@ -48,13 +52,13 @@ export default function Home() {
 
         try {
 
-            // const usuario = await loginUsuario(email, senha);
+            const usuario = await loginUsuario(email, senha);
 
-            //SALVAR TOKEN EM COOKIE
-            // document.cookie = `token=${usuario.token}; path=/; SameSite=Lax`;
+            // SALVAR TOKEN EM COOKIE
+            document.cookie = `token=${usuario.token}; path=/; SameSite=Lax`;
 
-            // console.log("Token salvo:", usuario.token);
-            // console.log("Usuário logado:", usuario);
+            console.log("Token salvo:", usuario.token);
+            console.log("Usuário logado:", usuario);
 
             toast.success("✅ Login realizado com sucesso");
 
