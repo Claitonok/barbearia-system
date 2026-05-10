@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💈 Barber Manager - Sistema de Gestão de Barbearia
 
-## Getting Started
+Sistema Full-Stack de agendamentos e gestão para barbearias, focado em alta performance, segurança e experiência do usuário. O projeto utiliza uma arquitetura moderna com Front-end em **Next.js** e um ecossistema Back-end robusto em **Spring Boot**.
 
-First, run the development server:
+## 🚀 Tecnologias Principais
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Front-end
+*   **Next.js 14+**: Renderização híbrida (SSR/Client Components) e roteamento avançado.
+*   **Tailwind CSS**: Estilização "Premium Dark" personalizada.
+*   **Middleware**: Controle de acesso e proteção de rotas privadas.
+*   **Sonner**: Feedback visual de notificações e promessas (toasts).
+*   **TypeScript**: Tipagem estática para maior segurança no desenvolvimento.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Back-end (API Rest)
+*   **Java 17 & Spring Boot**: Core da aplicação.
+*   **Spring Data JPA**: Abstração de banco de dados e persistência.
+*   **Spring Security & JWT**: Autenticação stateless e controle de permissões por **Roles**.
+*   **RabbitMQ**: Mensageria assíncrona para fluxos críticos.
+*   **Docker**: Conteinerização da API e serviços de infraestrutura (RabbitMQ).
+*   **JUnit**: Testes unitários para garantir a estabilidade do código.
+*   **Lombok**: Produtividade na escrita de modelos e DTOs.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ Arquitetura e Funcionalidades
 
-## Learn More
+### 📧 Fluxo de Recuperação de Senha com RabbitMQ
+Para garantir que o envio de e-mails de recuperação não trave a aplicação e seja resiliente a falhas, implementamos o **RabbitMQ**:
+1.  **Solicitação**: O usuário solicita o código de 6 dígitos.
+2.  **Produtor**: A API gera o código e envia os dados para uma **Exchange** no RabbitMQ.
+3.  **Fila (Queue)**: A mensagem aguarda em uma fila persistente.
+4.  **Consumidor**: Um serviço dedicado consome essa fila e realiza o disparo via SMTP.
+    *   *Vantagem*: Caso o servidor de e-mail fique instável, a requisição não retorna erro para o usuário; ela permanece na fila para reprocessamento automático.
 
-To learn more about Next.js, take a look at the following resources:
+### 🔐 Segurança e Autenticação
+*   **JWT (JSON Web Token)**: Implementado para manter a sessão do usuário segura e leve.
+*   **CORS Config**: Configuração granular para permitir apenas que o domínio do Front-end Next.js consuma os recursos da API.
+*   **Role-Based Access Control (RBAC)**: Diferenciação de acessos entre `ROLE_ADMIN` (gestão) e usuários comuns.
+*   **Middleware Next.js**: No front-end, o middleware intercepta as requisições para verificar a presença do token antes de renderizar páginas sensíveis.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 🏗️ Padronização e Erros
+*   **DTOs (Data Transfer Objects)**: Utilizados para desacoplar a camada de persistência da camada de apresentação, melhorando a segurança e a performance.
+*   **Global Exception Handler**: Tratamento centralizado de erros utilizando `MyRuntimeException`. Isso garante que a API retorne mensagens claras e padronizadas, facilitando o debug e a experiência do usuário final.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🐳 Como Executar o Projeto
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1.  **Pré-requisitos**: Ter o Docker e Docker Compose instalados.
+2.  **Subir Infraestrutura**:
+    ```bash
+    # Na raiz do projeto back-end
+    docker-compose up -d
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+# Na pasta do projeto Next.js
+
+* npm install
+* npm run dev
+
+---
+
+## 📅 Funcionalidades do Sistema
+- [x] Agendamento inteligente com validação de horário de funcionamento.
+- [x] Painel Administrativo para controle de serviços.
+- [x] Login seguro com JWT.
+- [x] Recuperação de senha via Token de 6 dígitos (E-mail assíncrono).
+- [x] Interface Responsiva e adaptada para dispositivos móveis.
+
+---
+
+* Desenvolvido com foco em escalabilidade por **Nexora Systems**.
