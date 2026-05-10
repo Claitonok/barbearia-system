@@ -2,7 +2,7 @@ import { AgendamentoHorario, ResponseAgendamentoHorario, UsuarioAdmin } from "@/
 
 //const API_URL = "http://localhost:8080/barbearia/json"; // My Localhost
 
-const API_URL = "https://system-barbearia-production.up.railway.app/"; // Railway Deployment
+const API_URL = "https://system-barbearia-production.up.railway.app/barbearia/json"; // Railway Deployment
 
 // Recriando a credencial de forma segura
 const auth = Buffer.from(`${process.env.NEXT_PUBLIC_SYSTEM_USER}:${process.env.NEXT_PUBLIC_SYSTEM_PASS}`).toString('base64');
