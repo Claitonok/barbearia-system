@@ -1,6 +1,7 @@
 import { AgendamentoHorario, ResponseAgendamentoHorario, UsuarioAdmin } from "@/types/dados";
 
 //const API_URL = "http://localhost:8080/barbearia/json"; // My Localhost
+
 const API_URL = "https://system-barbearia-production.up.railway.app/"; // Railway Deployment
 
 // Recriando a credencial de forma segura
