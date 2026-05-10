@@ -1,5 +1,6 @@
 'use client';
 
+import { agendamentoHorario } from "@/api/auth/route";
 import { HeaderHome } from "@/components/Header";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -7,180 +8,190 @@ import { toast } from "sonner";
 export default function Home() {
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
-  const [modelo, setModelo] = useState("");
-  const [dataHora, setDataHora] = useState("");
+  const [dataAgendamento, setDataHora] = useState("");
+  const [valorParaEnviar, setValorParaEnviar] = useState("");
 
+  const valor = Number(valorParaEnviar);
+
+  const horariosFuncionamento = [
+    { dias: "Terça a Sexta", horas: "09:00 - 19:00" },
+    { dias: "Sábado", horas: "08:00 - 18:00" },
+    { dias: "Dom e Seg", horas: "Fechado", destaque: true },
+  ];
+
+  function validarHorario(dataIso: string) {
+    const data = new Date(dataIso);
+    const diaSemana = data.getDay(); 
+    const hora = data.getHours();
+
+    if (diaSemana === 0 || diaSemana === 1) return { valida: false, msg: "Estamos fechados aos Domingos e Segundas! 😴" };
+    
+    if (diaSemana === 6) {
+      if (hora < 8 || hora >= 18) return { valida: false, msg: "No sábado atendemos das 08:00 às 18:00! ✂️" };
+    } else {
+      if (hora < 9 || hora >= 19) return { valida: false, msg: "Nosso horário é das 09:00 às 19:00! ✂️" };
+    }
+    return { valida: true };
+  }
+
+  const handleLimpar = () => {
+    setNome("");
+    setTelefone("");
+    setDataHora("");
+    setValorParaEnviar("");
+  };
+
+  async function handleSubmit(e: any) {
+    e.preventDefault();
+
+    if (!nome || !telefone || !dataAgendamento || !valorParaEnviar) {
+      toast.error("Por favor, preencha todos os campos! ❌");
+      return;
+    }
+
+    const validacao = validarHorario(dataAgendamento);
+    if (!validacao.valida) {
+      toast.error(validacao.msg);
+      return;
+    }
+
+    const agendar = async () => {
+      await agendamentoHorario({ nome, telefone, valor, dataAgendamento });
+      window.open(gerarLinkWhatsApp(), "_blank");
+      return "Agendamento realizado!";
+    };
+
+    toast.promise(agendar, {
+      loading: 'Processando seu horário...',
+      success: 'Sucesso! Redirecionando...',
+      error: 'Erro ao agendar.',
+    });
+  }
 
   function gerarLinkWhatsApp() {
-    const numeroBarbearia = "+5513997290816"; // seu número
-
+    const numeroBarbearia = "+5513997290816";
     const mensagem = `
-💈 Barbearia
-
-Olá! ${nome}
-
-Seu agendamento foi confirmado:
-📅 ${dataHora}
-📞 Telefone: +55${telefone}
-✂️ Serviço: ${modelo}
-
-Nos vemos lá!
+💈 *Barbearia*
+Olá! *${nome}*
+Agendamento solicitado:
+📅 ${new Date(dataAgendamento).toLocaleString('pt-BR')}
+📞 Contato: ${telefone}
+✂️ Serviço: R$${valor},00
 `;
-
     return `https://wa.me/${numeroBarbearia}?text=${encodeURIComponent(mensagem)}`;
   }
 
-  function handleSubmit(e: any) {
-    e.preventDefault();
-
-    if (!nome || !telefone || !dataHora || !modelo) {
-      toast.error("Preencha todos os campos! ❌");
-      return;
-    }
-    setTimeout(() => {
-      toast.success("Link gerado! Abrindo WhatsApp...");
-      alert("Link gerado! Abrindo WhatsApp..." + telefone);
-      const link = gerarLinkWhatsApp();
-      window.open(link, "_blank");
-    }, 1500);
-  }
-
-  // Função que aplica a máscara de telefone
   const formatPhone = (value: string) => {
     if (!value) return "";
-    // Remove qualquer caractere que não seja número
     value = value.replace(/\D/g, "");
-    // (11) 99999-9999
-    if (value.length <= 15) {
+    if (value.length <= 11) {
       value = value.replace(/^(\d{2})(\d)/g, "($1) $2");
       value = value.replace(/(\d{5})(\d)/, "$1-$2");
-    } else if (value.length >= 16) {
-      toast.error("Número de telefone muito longo! ❌");
     }
     return value;
   };
 
-
   return (
-    <div className="min-h-screen">
-
+    <div className="min-h-screen bg-zinc-950 flex flex-col font-sans text-white">
+      
       <HeaderHome />
 
-      <main className="mx-auto max-w-4xl px-6 py-12 md:py-20 mt-10 border-2 rounded-lg bg-zinc-50 dark:bg-zinc-900">
-        <div className="mb-10 space-y-2">
-          <h1 className="text-3xl font-extrabold text-zinc-900 dark:text-zinc-100 sm:text-4xl">
-            Bem-vindo ao sistema de barbearia!
-          </h1>
-          <p className="text-lg text-zinc-500 dark:text-zinc-400">
-            Agende seu horário em poucos segundos.
-          </p>
+      <main className="grow flex flex-col items-center p-4 md:p-8 space-y-8">
+        
+        <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center mt-10">
+          <div>
+            <h1 className="text-4xl md:text-6xl font-black tracking-tighter bg-linear-to-r 
+            from-white to-zinc-500 bg-clip-text text-transparent uppercase leading-tight">
+              Estilo & <br /> Navalha
+            </h1>
+            <p className="text-zinc-400 mt-4 max-w-sm">
+              Sua melhor versão começa aqui. Agende seu atendimento exclusivo com nossa equipe.
+            </p>
+          </div>
+
+          <div className="bg-zinc-900/40 border border-zinc-800 p-6 rounded-2xl backdrop-blur-sm">
+            <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-blue-500 mb-4">Funcionamento</h3>
+            <div className="space-y-3">
+              {horariosFuncionamento.map((h, i) => (
+                <div key={i} className="flex justify-between items-center border-b border-zinc-800/50 pb-2 last:border-0">
+                  <span className="text-sm font-medium text-zinc-300">{h.dias}</span>
+                  <span className={`text-sm font-bold ${h.destaque ? 'text-red-500/80' : 'text-white'}`}>
+                    {h.horas}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/50">
-          <h2 className="mb-6 text-xl font-semibold">Novo Agendamento</h2>
+        <div className="w-full max-w-4xl bg-black border border-zinc-800 p-6 md:p-10 rounded-3xl shadow-2xl">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="h-8 w-1 bg-blue-600 rounded-full" />
+            <h2 className="text-xl md:text-2xl font-bold">Solicitar Horário</h2>
+          </div>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-
-              {/* NOME */}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium">Nome completo</label>
-                <input
-                  type="text"
-                  value={nome}
-                  onChange={(e) => setNome(e.target.value)}
-                  placeholder="Ex: João Silva"
-                  className="w-full rounded-lg border border-zinc-300 px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 dark:border-zinc-700"
-                />
+                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-1">Seu Nome</label>
+                <input type="text" value={nome} onChange={(e) => setNome(e.target.value)} 
+                placeholder="Nome completo" className="w-full rounded-2xl bg-zinc-100 
+                text-black px-5 py-4 outline-none focus:ring-2 focus:ring-blue-500 font-semibold transition-all" />
               </div>
 
-              {/* TELEFONE */}
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium">Telefone</label>
-                <input
-                  type="tel"
-                  value={telefone}
-                  maxLength={15}
-                  onChange={(e) => setTelefone(formatPhone(e.target.value))}
-                  placeholder="(11) 99999-9999"
-                  className="w-full rounded-lg border border-zinc-300 px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 dark:border-zinc-700"
-                />
+                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-1">WhatsApp</label>
+                <input type="tel" value={telefone} maxLength={15} onChange={(e) => setTelefone(formatPhone(e.target.value))}
+                 placeholder="(13) 99999-9999" className="w-full rounded-2xl bg-zinc-100 text-black px-5 
+                 py-4 outline-none focus:ring-2 focus:ring-blue-500 font-semibold transition-all" />
               </div>
 
-              {/* SELECT MODELO */}
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium">Modelo</label>
-                <select
-                  value={modelo}
-                  onChange={(e) => setModelo(e.target.value)}
-                  className="w-full rounded-lg border border-zinc-300 px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 dark:border-zinc-700"
-                >
-                  <option className="text-black" >Selecione um modelo</option>
-                  <option className="text-black" value={35} >Corte | R$35,00</option>
-                  <option className="text-black" value={10} >Barba | R$10,00</option>
-                  <option className="text-black" value={45} >Corte e Barba | R$45,00</option>
+                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-1">Serviço</label>
+                <select value={valorParaEnviar} onChange={(e) => setValorParaEnviar(e.target.value)} 
+                className="w-full rounded-2xl bg-zinc-100 text-black px-5 py-4 outline-none focus:ring-2 
+                focus:ring-blue-500 font-semibold appearance-none cursor-pointer">
+                  <option value="" disabled>Escolha o serviço</option>
+                  <option value="35">Corte Tradicional | R$ 35</option>
+                  <option value="10">Barba Completa | R$ 10</option>
+                  <option value="45">Combo: Corte + Barba | R$ 45</option>
                 </select>
               </div>
 
-              {/* DATA */}
-              <div className="flex flex-col gap-2 sm:col-span-2">
-                <label className="text-sm font-medium">Data e Horário</label>
-                <input
-                  type="datetime-local"
-                  value={dataHora}
-                  onChange={(e) => setDataHora(e.target.value)}
-                  className="
-      w-full rounded-lg border border-zinc-300 bg-transparent px-4 py-2.5 text-sm outline-none transition 
-      focus:ring-2 focus:ring-blue-500 dark:border-zinc-700
-      
-      /* Ajuste para o ícone do calendário */
-      [&::-webkit-calendar-picker-indicator]:cursor-pointer
-      [&::-webkit-calendar-picker-indicator]:rounded-md
-      [&::-webkit-calendar-picker-indicator]:p-1
-      [&::-webkit-calendar-picker-indicator]:invert-[0.5]
-      dark:[&::-webkit-calendar-picker-indicator]:invert
-      hover:[&::-webkit-calendar-picker-indicator]:bg-zinc-100
-      dark:hover:[&::-webkit-calendar-picker-indicator]:bg-zinc-800
-    "
-                />
+              <div className="flex flex-col gap-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-1">Data e Hora</label>
+                <input type="datetime-local" value={dataAgendamento}
+                 onChange={(e) => setDataHora(e.target.value)} 
+                 className="w-full rounded-2xl bg-zinc-100 text-black px-5 py-4 outline-none
+                  focus:ring-2 focus:ring-blue-500 font-semibold scheme-light" />
               </div>
-
             </div>
 
-            <div className="flex justify-end gap-3 pt-4 border-t border-zinc-100 dark:border-zinc-800">
-
-              <button
-                type="reset"
-                onClick={() => {
-                  setNome("");
-                  setTelefone("");
-                  setModelo("");
-                  setDataHora("");
-                }}
-                className="rounded-lg px-6 py-2.5 text-sm bg-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            <div className="flex flex-col md:flex-row items-center gap-4 pt-4">
+              <button 
+                type="button" 
+                onClick={handleLimpar}
+                className="w-full md:w-1/3 py-4 text-zinc-500 hover:text-white font-bold uppercase text-xs tracking-widest transition-colors"
               >
-                Limpar
+                Limpar Campos
               </button>
 
-              <button
-                type="submit"
-                className="rounded-lg bg-green-500 px-6 py-2.5 text-sm font-medium text-white hover:bg-green-600"
+              <button 
+                type="submit" 
+                className="w-full md:w-2/3 bg-green-600 hover:bg-green-500 text-white py-5 rounded-2xl font-black uppercase tracking-[0.15em] shadow-xl shadow-green-950/20 transition-all active:scale-95"
               >
-                Confirmar via WhatsApp
+                Confirmar Agendamento
               </button>
-
             </div>
           </form>
         </div>
       </main>
 
-      <footer className="border-t mt-15 border-zinc-200 py-6 dark:border-zinc-800">
-        <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
-          © {new Date().getFullYear()} Nexora Systems. All rights reserved.
+      <footer className="py-8 text-center border-t border-zinc-900/50">
+        <p className="text-zinc-600 text-[10px] tracking-[0.3em] uppercase">
+          © {new Date().getFullYear()} Nexora Systems • Barber Manager
         </p>
       </footer>
-
     </div>
   );
 }

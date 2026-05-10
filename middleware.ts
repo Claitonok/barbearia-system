@@ -26,6 +26,7 @@ export const config = {
     "/agendamentos/:path*",
     "/dashboard/:path*",
     "/servicos/:path*",
+    "/novo/:path*",
     "/reset-password/:path*"
   ]
 };

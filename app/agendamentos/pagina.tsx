@@ -4,9 +4,9 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { ResponseAgendamentoHorario } from "@/types/dados";
-import { Header } from "@/components/Header";
+import { HeaderAgendamentos } from "@/components/Header";
 import ComponenteFormatarValor from "./componenteFormatarValor";
-import { deleteUsuario } from "@/api/auth/route";
+import { deleteUsuarioAgendado } from "@/api/auth/route";
 
 interface Usuario {
   usuarioUsername: ResponseAgendamentoHorario[];
@@ -28,16 +28,16 @@ export default function Agendamentos(props: Usuario) {
 const hoje = new Date().toISOString().split('T')[0];
 
 // 2. Filtra os usuários para mostrar apenas os de HOJE
-const usuariosDoDia = useMemo(() => {
-  return usuarios.filter((user) => {
-    if (!user.dataAgendamento) return false;
+// const usuariosDoDia = useMemo(() => {
+//   return usuarios.filter((user) => {
+//     if (!user.dataAgendamento) return false;
     
-    // Converte a data do agendamento para o mesmo formato YYYY-MM-DD
-    const dataAgendamento = new Date(user.dataAgendamento).toISOString().split('T')[0];
+//     // Converte a data do agendamento para o mesmo formato YYYY-MM-DD
+//     const dataAgendamento = new Date(user.dataAgendamento).toISOString().split('T')[0];
     
-    return dataAgendamento === hoje;
-  });
-}, [usuarios, hoje]);
+//     return dataAgendamento === hoje;
+//   });
+// }, [usuarios, hoje]);
 
 // 3. Ajusta o filtro de BUSCA para olhar apenas para os dados já filtrados do dia
 const usuariosFiltrados = useMemo(() => {
@@ -101,7 +101,7 @@ const usuariosFiltrados = useMemo(() => {
   //Metodo de deletar o usuario!
    async function handleDelete(id: number) {
     try {
-      await deleteUsuario(id);
+      await deleteUsuarioAgendado(id);
       if (!id) {
         toast.error("Usuário não encontrado ❌");
         return;
@@ -116,7 +116,7 @@ const usuariosFiltrados = useMemo(() => {
 
     <div className="w-full">
         <header>
-            <Header title={`Agendamentos de Hoje - ${new Date().toLocaleDateString('pt-BR')}`} />
+            <HeaderAgendamentos title={`Agendamentos de Hoje - ${new Date().toLocaleDateString('pt-BR')}`} />
         </header>
 
       {/* BUSCA */}
@@ -186,7 +186,7 @@ const usuariosFiltrados = useMemo(() => {
               </th>
 
               <th className="px-4 py-3">Data e Hora</th>
-              <th className="px-4 py-3">Corte | barba</th>
+              <th className="px-4 py-3">Serviço</th>
 
               <th className="px-4 py-3 text-center">
                 Ações

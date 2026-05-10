@@ -63,7 +63,7 @@ export async function deleteUsuarioAdmin(id: number) {
 }
 
 // 🔥 Função para login do usuário
-export async function loginUsuario(email: string, senha: string) {
+export async function loginUsuarioAdmin(email: string, senha: string) {
 
     const response = await fetch(`${API_URL}/admin/login`, {
         method: "POST",
@@ -203,7 +203,7 @@ export async function PegarOagendamentoPorId(id: number): Promise<ResponseAgenda
 }
 
 // 5️⃣ DELETE (remover usuário)
-export async function deleteUsuario(id: number) {
+export async function deleteUsuarioAgendado(id: number) {
 
   const response = await fetch(`${API_URL}/barbearia-deletar/${id}`, {
     method: "DELETE",
