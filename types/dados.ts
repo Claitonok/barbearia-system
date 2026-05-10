@@ -5,10 +5,10 @@ export interface UsuarioApiResponse {
 
 // Resposta da API para agendamento
 export interface ResponseAgendamentoHorario {
-   id: Number;
+   id: number;
    nome: string;
    telefone: string;
-   valor: Number;
+   valor: number;
    dataAgendamento: string;
 }
  
@@ -16,7 +16,7 @@ export interface ResponseAgendamentoHorario {
 export interface AgendamentoHorario {
   nome: string;
   telefone: string;
-  valor: Number;
+  valor: number;
   dataAgendamento: string;
 }
 
