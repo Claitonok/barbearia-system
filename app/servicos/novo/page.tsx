@@ -16,14 +16,12 @@ export default function NovoAgendamento() {
   function gerarLinkWhatsApp() {
     const numeroBarbearia = "+5513997290816";
     const mensagem = `
-💈 *Barbearia*
-
-Olá! *${nome}*
-
-Seu agendamento foi confirmado:
-📅 ${new Date(dataAgendamento).toLocaleString('pt-BR')}
-📞 Telefone: ${telefone}
-✂️ Valor: R$${valor},00
+*Barbearia*\n
+Olá, *${nome}* \n
+Seu agendamento foi solicitado:\n
+ *Data:* ${new Date(dataAgendamento).toLocaleString('pt-BR')}\n
+ *Contato:* ${telefone}\n
+ *Serviço:* R$ ${valor},00
 
 Nos vemos lá!
 `;
@@ -66,7 +64,7 @@ Nos vemos lá!
     <div className="min-h-screen bg-zinc-950 flex flex-col font-sans">
       <HeaderGlobal cabecalho="Novo Agendamento" rota="agendamentos" />
 
-      <main className="flex-grow flex flex-col items-center justify-center p-4 md:p-8">
+      <main className="grow flex flex-col items-center justify-center p-4 md:p-8">
         <div className="w-full max-w-2xl bg-black text-white p-6 md:p-10 rounded-2xl shadow-2xl border border-zinc-800">
           
           <header className="mb-8 text-center md:text-left">
@@ -126,7 +124,7 @@ Nos vemos lá!
                   type="datetime-local"
                   value={dataAgendamento}
                   onChange={(e) => setDataHora(e.target.value)}
-                  className="w-full rounded-xl bg-zinc-100 text-black px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition-all [color-scheme:light]"
+                  className="w-full rounded-xl bg-zinc-100 text-black px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition-all scheme-light"
                 />
               </div>
             </div>

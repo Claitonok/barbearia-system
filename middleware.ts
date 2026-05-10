@@ -14,9 +14,9 @@ export function middleware(request: NextRequest) {
   }
 
   // 🔒 sem token → bloqueia
-  // if (!token) {
-  //   return NextResponse.redirect(new URL("/login", request.url));
-  // }
+  if (!token) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
 
   return NextResponse.next();
 }

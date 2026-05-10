@@ -9,7 +9,7 @@ export default function Home() {
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   const [dataAgendamento, setDataHora] = useState("");
-  const [valorParaEnviar, setValorParaEnviar] = useState("");
+  const [valorParaEnviar, setvalorParaEnviar] = useState("");
 
   const valor = Number(valorParaEnviar);
 
@@ -38,13 +38,13 @@ export default function Home() {
     setNome("");
     setTelefone("");
     setDataHora("");
-    setValorParaEnviar("");
+    setvalorParaEnviar("");
   };
 
   async function handleSubmit(e: any) {
     e.preventDefault();
 
-    if (!nome || !telefone || !dataAgendamento || !valorParaEnviar) {
+    if (!nome || !telefone || !dataAgendamento || !valor) {
       toast.error("Por favor, preencha todos os campos! ❌");
       return;
     }
@@ -56,7 +56,7 @@ export default function Home() {
     }
 
     const agendar = async () => {
-      await agendamentoHorario({ nome, telefone, valor, dataAgendamento });
+      // await agendamentoHorario({ nome, telefone, valor, dataAgendamento });
       window.open(gerarLinkWhatsApp(), "_blank");
       return "Agendamento realizado!";
     };
@@ -70,15 +70,17 @@ export default function Home() {
 
   function gerarLinkWhatsApp() {
     const numeroBarbearia = "+5513997290816";
-    const mensagem = `
-💈 *Barbearia*
-Olá! *${nome}*
-Agendamento solicitado:
-📅 ${new Date(dataAgendamento).toLocaleString('pt-BR')}
-📞 Contato: ${telefone}
-✂️ Serviço: R$${valor},00
-`;
-    return `https://wa.me/${numeroBarbearia}?text=${encodeURIComponent(mensagem)}`;
+
+    const mensagem =`
+*Barbearia*\n
+Olá, *${nome}* \n
+Seu agendamento foi solicitado:\n
+ *Data:* ${new Date(dataAgendamento).toLocaleString('pt-BR')}\n
+ *Contato:* ${telefone}\n
+ *Serviço:* R$ ${valor},00
+    `;
+
+    return `https://wa.me/${numeroBarbearia}?text=${encodeURIComponent(mensagem)}`;    
   }
 
   const formatPhone = (value: string) => {
@@ -148,7 +150,7 @@ Agendamento solicitado:
 
               <div className="flex flex-col gap-2">
                 <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-1">Serviço</label>
-                <select value={valorParaEnviar} onChange={(e) => setValorParaEnviar(e.target.value)} 
+                <select value={valor} onChange={(e) => setvalorParaEnviar(e.target.value)} 
                 className="w-full rounded-2xl bg-zinc-100 text-black px-5 py-4 outline-none focus:ring-2 
                 focus:ring-blue-500 font-semibold appearance-none cursor-pointer">
                   <option value="" disabled>Escolha o serviço</option>

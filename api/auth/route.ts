@@ -89,8 +89,8 @@ export async function loginUsuarioAdmin(email: string, senha: string) {
 // 🔥 Função para enviar codigo por email de recuperação!!
 export async function RecoverEmail(email: string) {
 
-    //  admin@admin.com
-    // 4347667
+    // admin@admin.com
+    // 5165766
     
     // 🔍 Buscar usuário pelo email no banco
     const response = await fetch(`${API_URL}/admin/forgot-password`, {
@@ -167,6 +167,9 @@ export async function agendamentoHorario(usuario: AgendamentoHorario): Promise<A
         },
         body: JSON.stringify(usuario)
     });
+
+    console.log("STATUS:", response.status);
+
     if (!response.ok) {
         throw new Error("Erro ao cadastrar o agendamento!!");
     }
