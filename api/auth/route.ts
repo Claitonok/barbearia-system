@@ -1,12 +1,10 @@
 import { AgendamentoHorario, ResponseAgendamentoHorario, UsuarioAdmin } from "@/types/dados";
-import { NextResponse } from "next/server";
 
-
-const API_URL = "http://localhost:8080/application/json"; // My Localhost
+const API_URL = "http://localhost:8080/barbearia/json"; // My Localhost
 // const API_URL = "/application/json"; // Railway Deployment
 
 // Recriando a credencial de forma segura
-const auth = Buffer.from(`${process.env.SYSTEM_USER}:${process.env.SYSTEM_PASS}`).toString('base64');
+const auth = Buffer.from(`${process.env.NEXT_PUBLIC_SYSTEM_USER}:${process.env.NEXT_PUBLIC_SYSTEM_PASS}`).toString('base64');
 
 // 1. Função para buscar usuários admin
 export async function getUsuarios(): Promise<any> {
@@ -65,7 +63,10 @@ export async function deleteUsuarioAdmin(id: number) {
 // 🔥 Função para login do usuário
 export async function loginUsuarioAdmin(email: string, senha: string) {
 
-    const response = await fetch(`${API_URL}/admin/login`, {
+    //  admin@admin.com
+    // 0123
+
+    const response = await fetch(`${API_URL}/admin-login`, {
         method: "POST",
         headers: {
             // 2. Passa o cabeçalho de autorização básico
@@ -79,7 +80,7 @@ export async function loginUsuarioAdmin(email: string, senha: string) {
     });
 
     if (!response.ok) {
-        return NextResponse.json({ error: "Credenciais inválidas" }, { status: 401 });
+        throw new Error("Credenciais inválidas");
     }
 
     return response.json();
@@ -88,6 +89,9 @@ export async function loginUsuarioAdmin(email: string, senha: string) {
 // 🔥 Função para enviar codigo por email de recuperação!!
 export async function RecoverEmail(email: string) {
 
+    //  admin@admin.com
+    // 4347667
+    
     // 🔍 Buscar usuário pelo email no banco
     const response = await fetch(`${API_URL}/admin/forgot-password`, {
         method: "POST",
@@ -100,14 +104,14 @@ export async function RecoverEmail(email: string) {
     });
 
     if (!response.ok) {
-        return NextResponse.json({ error: "Email não encontrado" }, { status: 404 });
+        throw new Error("Email não encontrado");
     }
 
     return response.json();
 }
 
 // 🔥 Função para resetar senha usando o token
-export async function AuthRecover(token: string, novaSenha: string) {
+export async function AuthRecover(resetToken: string, senha: string) {
 
     // 🔍 Buscar usuário pelo token no banco
     // verificar se existe e se não expirou
@@ -118,11 +122,11 @@ export async function AuthRecover(token: string, novaSenha: string) {
             "Authorization": `Basic ${auth}`,
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ token, novaSenha })
+        body: JSON.stringify({ resetToken, senha })
     });
 
     if (!response.ok) {
-        return NextResponse.json({ error: "Token inválido" }, { status: 401 });
+        throw new Error("Token inválido");
     }
 
     return response.json();

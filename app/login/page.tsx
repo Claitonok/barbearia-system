@@ -22,15 +22,15 @@ export default function Home() {
         }
 
         try {
-            const rest = await RecoverEmail(emailRecovery);
-            if (!rest.ok) throw new Error();
+            await RecoverEmail(emailRecovery);
+            //  if (!res.ok) throw toast.error("E-mail inválido ou expirado");
 
             toast.success("Enviamos um token de recuperação para seu email 📩");
             setTimeout(() => {
                 router.push("/reset-password");
             }, 2000);
         } catch (error) {
-            toast.error("Email não encontrado ou erro no servidor ❌");
+            toast.error("Email não encontrado ❌");
         }
     }
 
@@ -43,14 +43,22 @@ export default function Home() {
         }
 
         try {
-            const usuario = await loginUsuarioAdmin(email, senha);
-            document.cookie = `token=${usuario.token}; path=/; SameSite=Lax`;
+            const usuarioAdmin = await loginUsuarioAdmin(email, senha);
+
+            document.cookie = `token=${usuarioAdmin.token}; path=/; SameSite=Lax`;
+
+            // console.log("Token salvo:", usuarioAdmin.token);
+            // console.log("Usuário logado:", usuarioAdmin);
+
             toast.success("✅ Login realizado com sucesso");
+
             setTimeout(() => {
                 router.push("/agendamentos");
             }, 1200);
+
         } catch (error) {
             toast.error("Usuário ou senha inválidos ❌");
+            return;
         }
     }
 
@@ -60,7 +68,7 @@ export default function Home() {
                 <Header title="Login" />
             </header>
 
-            <main className="flex-grow flex flex-col items-center justify-center p-4 gap-8">
+            <main className="grow flex flex-col items-center justify-center p-4 gap-8">
                 
                 {/* CARD DE LOGIN */}
                 <div className="w-full max-w-md bg-black text-white p-6 md:p-8 rounded-2xl shadow-2xl border border-zinc-800">

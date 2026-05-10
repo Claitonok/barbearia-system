@@ -42,9 +42,9 @@ export default function ResetPasswordPage() {
         setLoading(true);
 
         try {
-            const res = await AuthRecover(tokenState, senha);
-
-            if (!res.ok) throw toast.error("Token inválido ou expirado");
+            
+            await AuthRecover(tokenState, senha);
+            // if (!res.ok) throw toast.error("Token inválido ou expirado");
 
             toast.success("Senha redefinida com sucesso 🎉");
 
