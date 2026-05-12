@@ -110,10 +110,11 @@ Nos vemos lá!
                   onChange={(e) => setValorParaEnviar(e.target.value)}
                   className="w-full rounded-xl bg-zinc-100 text-black px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition-all appearance-none cursor-pointer"
                 >
-                  <option value="" disabled>Selecione o serviço</option>
-                  <option value="35">Corte | R$ 35,00</option>
-                  <option value="10">Barba | R$ 10,00</option>
-                  <option value="45">Corte & Barba | R$ 45,00</option>
+                  <option value="">Escolha o serviço</option>
+                  <option value="35">Corte Tradicional | R$ 35</option>
+                  <option value="15">Barba Completa | R$ 15</option>
+                  <option value="10">Sobrancelha | R$ 10</option>
+                  <option value="60">Combo: Corte + Barba + sobrancelha | R$ 60</option>
                 </select>
               </div>
 

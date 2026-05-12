@@ -153,10 +153,11 @@ Seu agendamento foi solicitado:\n
                 <select value={valor} onChange={(e) => setvalorParaEnviar(e.target.value)} 
                 className="w-full rounded-2xl bg-zinc-100 text-black px-5 py-4 outline-none focus:ring-2 
                 focus:ring-blue-500 font-semibold appearance-none cursor-pointer">
-                  <option value="" disabled>Escolha o serviço</option>
+                  <option value="">Escolha o serviço</option>
                   <option value="35">Corte Tradicional | R$ 35</option>
-                  <option value="10">Barba Completa | R$ 10</option>
-                  <option value="45">Combo: Corte + Barba | R$ 45</option>
+                  <option value="15">Barba Completa | R$ 15</option>
+                  <option value="10">Sobrancelha | R$ 10</option>
+                  <option value="60">Combo: Corte + Barba + sobrancelha | R$ 60</option>
                 </select>
               </div>
 
